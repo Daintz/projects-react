@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import Err from "./Err";
 
-function Form() {
+function Form({ patients, setPatients }) {
   const [name, setName] = useState('');
   const [owner, setOwner] = useState('');
   const [email, setEmail] = useState('');
@@ -8,6 +9,13 @@ function Form() {
   const [sympton, setSympton] = useState('');
 
   const [err, setErr] = useState(false);
+
+  const generateID = () => {
+    const random = Math.random().toString(36);
+    const date = Date.now().toString(36);
+
+    return random + date;
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -21,6 +29,25 @@ function Form() {
     } 
 
     setErr(false);
+
+    const objPatient = {
+      name, 
+      owner, 
+      email, 
+      calendar, 
+      sympton,
+      id: generateID()
+    }
+
+    // console.log(objPatient);
+
+    setPatients([...patients, objPatient]);
+
+    setName('');
+    setOwner('');
+    setEmail('');
+    setCalendar('');
+    setSympton('');
   };
 
   return (
@@ -115,11 +142,7 @@ function Form() {
             value={sympton}
             onChange={(e) => setSympton(e.target.value)}
           />
-          {err && (
-          <div>
-            <p className="bg-red-800 text-white text-center p-3 uppercase font-bold mb-10 mt-10 rounded-md">Todos los campos son obligatorios</p>
-          </div>
-          )}
+          {err && <Err><p>Todos los campos son obligatorios</p></Err>}
         </div>
         <input
           type="submit"
